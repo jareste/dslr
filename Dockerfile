@@ -2,7 +2,7 @@ FROM python:3.10-slim
 
 WORKDIR /usr/src/app
 
-RUN pip install --no-cache-dir matplotlib
+RUN pip install --no-cache-dir matplotlib numpy
 
 COPY . .
 
@@ -10,6 +10,6 @@ RUN mkdir /output
 
 RUN chmod 777 /output
 
-# CMD ["python", "./plot.py"]
+RUN chmod +x exec_all.sh
 
-CMD ["python", "srcs/describe.py", "datasets/dataset_train.csv"]
+CMD ["/bin/sh", "./exec_all.sh"]
