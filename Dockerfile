@@ -2,7 +2,7 @@ FROM python:3.10-slim
 
 WORKDIR /usr/src/app
 
-RUN pip install --no-cache-dir matplotlib numpy
+RUN pip install --no-cache-dir matplotlib numpy seaborn pandas scikit-learn>=0.20.2
 
 COPY . .
 

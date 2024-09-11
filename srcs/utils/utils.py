@@ -1,6 +1,7 @@
 import csv
 import numpy as np
 import math
+import matplotlib.pyplot as plt
 
 def is_float(value):
     try:
@@ -8,6 +9,54 @@ def is_float(value):
         return True
     except ValueError:
         return False
+
+def calculate_correlation(feature1_data, feature2_data):
+    valid_indices = ~np.isnan(feature1_data) & ~np.isnan(feature2_data)
+    feature1_data = feature1_data[valid_indices]
+    feature2_data = feature2_data[valid_indices]
+
+    if len(feature1_data) > 1 and len(feature2_data) > 1:
+        return np.corrcoef(feature1_data, feature2_data)[0, 1]
+    else:
+        return 0
+
+def find_most_similar_features(numerical_data, headers):
+    features = list(numerical_data.keys())
+    max_correlation = -1
+    most_similar_features = (None, None)
+
+    for i in range(len(features)):
+        for j in range(i + 1, len(features)):
+            feature1 = features[i]
+            feature2 = features[j]
+            correlation = abs(calculate_correlation(np.array(numerical_data[feature1], dtype=float),
+                                                    np.array(numerical_data[feature2], dtype=float)))
+            if correlation > max_correlation:
+                max_correlation = correlation
+                most_similar_features = (feature1, feature2)
+
+    return most_similar_features, max_correlation
+
+def plot_scatter(feature1, feature2, feature1_data, feature2_data, houses, ax=None, save_plot=False):
+    house_colors = {'Gryffindor': 'red', 'Hufflepuff': 'yellow', 'Ravenclaw': 'blue', 'Slytherin': 'green'}
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+    for house in house_colors:
+        house_mask = (houses == house)
+        ax.scatter(feature1_data[house_mask], feature2_data[house_mask], alpha=0.5, color=house_colors[house], label=house)
+
+    if ax is None or save_plot:
+        ax.set_title(f"Scatter Plot: {feature1} vs {feature2}")
+        ax.set_xlabel(feature1)
+        ax.set_ylabel(feature2)
+        ax.grid(True)
+        ax.legend(loc='upper right')
+        plt.tight_layout()
+        plt.savefig(f'/output/scatter_{feature1}_vs_{feature2}.png')
+        plt.show()
+
 
 def percentile(data, p):
     p = p / 100
