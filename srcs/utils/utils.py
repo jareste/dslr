@@ -2,6 +2,7 @@ import csv
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from sys import exit
 
 def is_float(value):
     try:
@@ -54,7 +55,10 @@ def plot_scatter(feature1, feature2, feature1_data, feature2_data, houses, ax=No
         ax.grid(True)
         ax.legend(loc='upper right')
         plt.tight_layout()
-        plt.savefig(f'/output/scatter_{feature1}_vs_{feature2}.png')
+        try:
+            plt.savefig(f'/output/scatter_{feature1}_vs_{feature2}.png')
+        except:
+            print("Failed to save scatter plot")
         plt.show()
 
 
@@ -83,21 +87,44 @@ def calculate_statistics(data):
 
 def parse_csv(file_name):
     dataset = list()
-    with open(file_name, mode='r') as file:
-        csv_reader = csv.reader(file)
-        
-        headers = next(csv_reader)
-        dataset.append(headers)
-        
-        for row in csv_reader:
-            processed_row = list()
-            for value in row:
-                try:
-                    value = float(value)
-                except ValueError:
-                    if not value:
-                        value = np.nan
-                processed_row.append(value)
-            dataset.append(processed_row)
-    
+    try:
+        with open(file_name, mode='r') as file:
+            csv_reader = csv.reader(file)
+            
+            headers = next(csv_reader)
+            dataset.append(headers)
+            
+            for row in csv_reader:
+                processed_row = list()
+                for value in row:
+                    try:
+                        value = float(value)
+                    except ValueError:
+                        if not value:
+                            value = np.nan
+                    processed_row.append(value)
+                dataset.append(processed_row)
+    except FileNotFoundError:
+        print(f"Fatal error: file {file_name} not found. Exiting...")
+        exit(1)
+    except Exception as e:
+        print(f"Fatal error: {e}. Exiting...")
+        exit(1)
+
     return np.array(dataset, dtype=object)
+
+
+class StandardScaler:
+    def __init__(self):
+        self._mean = None
+        self._std = None
+
+    def fit(self, X):
+        self._mean = np.mean(X, axis=0)
+        self._std = np.std(X, axis=0)
+
+    def transform(self, X):
+        return (X - self._mean) / self._std
+
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))

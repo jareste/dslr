@@ -16,19 +16,19 @@ echo "-----------------------------------------------------------------------"
 python srcs/scatter_plot.py datasets/dataset_train.csv
 
 echo "-----------------------------------------------------------------------\n\n"
-echo "Pair plot"
+echo "Pair plot launched on background..."
 echo "-----------------------------------------------------------------------"
 
-python srcs/pair_plot.py datasets/dataset_train.csv
+python srcs/pair_plot.py datasets/dataset_train.csv &
 
-# echo "-----------------------------------------------------------------------\n\n"
-# echo "logreg_train"
-# echo "-----------------------------------------------------------------------"
+echo "-----------------------------------------------------------------------\n\n"
+echo "logreg_train"
+echo "-----------------------------------------------------------------------"
 
-# python srcs/logreg_train.py datasets/dataset_train.csv
+python srcs/logreg_train.py datasets/dataset_train.csv
 
-# echo "-----------------------------------------------------------------------\n\n"
-# echo "logreg_predict"
-# echo "-----------------------------------------------------------------------"
+echo "-----------------------------------------------------------------------\n\n"
+echo "logreg_predict"
+echo "-----------------------------------------------------------------------"
 
-# python srcs/logreg_predict.py datasets/dataset_train.csv
+python srcs/logreg_predict.py datasets/dataset_test.csv

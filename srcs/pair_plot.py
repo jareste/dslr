@@ -27,7 +27,10 @@ def main(file_name):
 
     sns.pairplot(df, hue='Hogwarts House', palette={'Gryffindor': 'red', 'Hufflepuff': 'yellow', 'Ravenclaw': 'blue', 'Slytherin': 'green'}, diag_kind='hist')
     
-    plt.savefig('/output/pair_plot.png', dpi=500, format='png', bbox_inches='tight', pad_inches=0.1, transparent=False)
+    try:
+        plt.savefig('/output/pair_plot.png', dpi=500, format='png', bbox_inches='tight', pad_inches=0.1, transparent=False)
+    except:
+        print("Failed to save pair plot to /output/pair_plot.png")
     plt.show()
 
 if __name__ == "__main__":

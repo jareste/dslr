@@ -1,4 +1,3 @@
-import math
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
@@ -63,8 +62,10 @@ def plot_histograms(numerical_data, house):
         plt.hist(numerical_data[feature], bins=30, color='blue', alpha=0.7)
         plt.title(f"{feature[:15]}")
         plt.tight_layout()
-    
-    plt.savefig(f'/output/histogram_{house}.png')
+    try:
+        plt.savefig(f'/output/histogram_{house}.png')
+    except:
+        print("Failed to save histogram plot")
     plt.show()
 
 def plot_most_homogeneous(houses_data, most_homogeneous_feature):
