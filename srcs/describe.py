@@ -2,7 +2,15 @@ import csv
 import math
 import numpy as np
 import sys
+from scipy.stats import skew
 from utils.utils import parse_csv, is_float, calculate_statistics
+
+def calculate_additional_statistics(col_data):
+    col_data_clean = [x for x in col_data if not math.isnan(x)]
+    variance = np.var(col_data_clean) if col_data_clean else float('nan')
+    skewness = skew(col_data_clean) if col_data_clean else float('nan')
+    iqr = np.percentile(col_data_clean, 75) - np.percentile(col_data_clean, 25) if col_data_clean else float('nan')
+    return variance, skewness, iqr
 
 def print_describe(parsed_data):
     headers = parsed_data[0]
@@ -10,7 +18,7 @@ def print_describe(parsed_data):
 
     columns = np.transpose(data)
     
-    stat_labels = ["Count", "Mean", "Std", "Min", "25%", "50%", "75%", "Max"]
+    stat_labels = ["Count", "Mean", "Std", "Min", "25%", "50%", "75%", "Max", "Variance", "Skewness", "IQR"]
     
     stats_dict = {}
 
@@ -18,7 +26,9 @@ def print_describe(parsed_data):
         col_name = headers[i]
         if is_float(col[1]):
             col_data = [float(x) if is_float(x) else float('nan') for x in col[1:]]
-            stats_dict[col_name] = calculate_statistics(col_data)
+            basic_stats = list(calculate_statistics(col_data))  # Convert to list
+            variance, skewness, iqr = calculate_additional_statistics(col_data)
+            stats_dict[col_name] = basic_stats + [variance, skewness, iqr]
         else:
             stats_dict[col_name] = ['N/A'] * len(stat_labels)
     
@@ -40,4 +50,3 @@ if __name__ == "__main__":
     else:
         file_name = sys.argv[1]
         describe(file_name)
-
